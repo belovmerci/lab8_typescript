@@ -6,6 +6,9 @@ type User = {
 type Course = {
     id: number;
     title: string;
+    role?: string;
+    level?: "junior" | "middle" | "senior"
+    rate?: 1 | 2 | 3 | 4 | 5;
 }
 
 type WithRate = {
@@ -13,15 +16,15 @@ type WithRate = {
 }
 
 type WithStudentRole = {
-    role: "student"
+    role?: "student"
 }
 
 type WithTeacherRole = {
-    role: "teacher"
+    role?: "teacher"
 }
 
 type WithLevel = {
-    level: "junior" | "middle" | "senior"
+    level?: "junior" | "middle" | "senior"
 }
 
 /* --- */
@@ -61,7 +64,7 @@ const t1: Teacher = {
             role: "teacher"
         },
         [1]: {
-            ...s1.courses[1],
+            ...s1.courses![1],
             role: "teacher"
         }
     }
