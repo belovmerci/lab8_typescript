@@ -1,52 +1,129 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import './TrafficLight.css';
 
-function Square({ n }) {
-  return <div>{n * n}</div>;
-}
+// Задача 1: Обратный таймер
+const ReverseTimer = () => {
+  const [count, setCount] = useState(10);
 
-function OnlyEven({ arr }) {
-  const evenNumbers = arr.filter(num => num % 2 === 0);
-  return <div>{evenNumbers.join(', ')}</div>;
-}
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCount((prevCount) => prevCount - 1);
+    }, 1000);
 
-function Temperature({ t }) {
-  const textStyle = {
-    color: t < 0 ? 'blue' : 'red'
+    if (count === 0) clearInterval(interval);
+
+    return () => clearInterval(interval);
+  }, [count]);
+
+  return <div>Обратный таймер: {count}</div>;
+};
+
+// Задача 2: Бесконечный таймер
+const InfiniteTimer = () => {
+  const [count, setCount] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+
+  useEffect(() => {
+    let interval;
+
+    if (isRunning) {
+      interval = setInterval(() => {
+        setCount((prevCount) => prevCount + 1);
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [isRunning]);
+
+  return (
+    <div>
+      <div>Бесконечный таймер: {count}</div>
+      <button onClick={() => setIsRunning(!isRunning)}>{isRunning ? 'Пауза' : 'Старт'}</button>
+    </div>
+  );
+};
+
+// Задача 3: Простые числа
+const PrimeNumbers = () => {
+  const [primes, setPrimes] = useState([2]);
+  const isPrime = (num) => {
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+      if (num % i === 0) return false;
+    }
+    return num > 1;
   };
 
-  return <div style={textStyle}>{t}</div>;
-}
+  useEffect(() => {
+    const interval = setInterval(() => {
+      let nextPrime = primes[primes.length - 1] + 1;
+      while (!isPrime(nextPrime)) {
+        nextPrime++;
+      }
+      setPrimes((prevPrimes) => [...prevPrimes, nextPrime]);
+    }, 1000);
 
-function ToggleButton() {
-  const [color, setColor] = useState('red');
+    return () => clearInterval(interval);
+  }, [primes]);
 
-  const handleClick = () => {
-    setColor(color === 'red' ? 'green' : 'red');
-  };
+  return <div>Простые числа: {primes.join(', ')}</div>;
+};
 
-  const buttonStyle = {
-    backgroundColor: color
-  };
+// Задача 4: Светофор
+const TrafficLight = () => {
+  const [activeLightIndex, setActiveLightIndex] = useState(0);
 
-  return <button style={buttonStyle} onClick={handleClick}>Нажми меня!</button>;
-}
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveLightIndex((prevIndex) => (prevIndex + 1) % 3);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="traffic-light">
+      <div className={`light red ${activeLightIndex === 0 ? 'active' : ''}`}></div>
+      <div className={`light yellow ${activeLightIndex === 1 ? 'active' : ''}`}></div>
+      <div className={`light green ${activeLightIndex === 2 ? 'active' : ''}`}></div>
+    </div>
+  );
+};
+
+
+// Задача 5: Перевёрнутая строка
+const RevertString = ({ s }) => {
+  const [revertedString, setRevertedString] = useState(s);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRevertedString((prevString) => prevString.slice(-1) + prevString.slice(0, -1));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return <div>{revertedString}</div>;
+};
 
 function App() {
   return (
     <div>
-      <h1>React Modules</h1>
+      <h1>React модули</h1>
       
-      <h2>Task 1: Square</h2>
-      <Square n={3} />
+      <h2>Задача 1: Обратный таймер</h2>
+      <ReverseTimer />
       
-      <h2>Task 2: OnlyEven</h2>
-      <OnlyEven arr={[14, 5, 6, 12, 21, 2]} />
+      <h2>Задача 2: Бесконечный таймер</h2>
+      <InfiniteTimer />
       
-      <h2>Task 3: Temperature</h2>
-      <Temperature t={451} />
+      <h2>Задача 3: Простые числа </h2>
+      <PrimeNumbers />
       
-      <h2>Task 4: ToggleButton</h2>
-      <ToggleButton />
+      <h2>Задача 4: Светофор</h2>
+      <TrafficLight />
+
+      <h2>Задача 5: Оборачиваемая строка</h2>
+      <RevertString s="привет!" />
     </div>
   );
 }
